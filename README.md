@@ -10,6 +10,41 @@
 - [NuGet package](http://nuget.org/List/Packages/LibGit2Sharp)
 - [Source code](https://github.com/libgit2/libgit2sharp/)
 
+## MadCap steps for building locally
+
+1. Clone this repository as well as libgit2sharp.nativebinaries so they are in folders next to each other:
+
+	```
+	git clone https://github.com/madcapsoftware/libgit2sharp.git
+	git clone https://github.com/madcapsoftware/libgit2sharp.nativebinaries.git
+	```
+
+	Example folder structure:
+	
+	```
+	C:\source\madcapsoftware\libgit2sharp
+	C:\source\madcapsoftware\libgit2sharp.nativebinaries
+	```
+
+2. Open a powershell terminal to the root of the libgit2sharp.nativebinaries repository
+3. Build `libgit2sharp.nativebinaries` and create a local nuget package, specifying the version to use. The version at time of writing matches the main `libgit2sharp.nativebinaries` repository with a `-ssh` suffix.
+
+    ```
+    .\UpdateAllLibsToSha.ps1 -libgit2sha main -libssh2sha master -zlibsha master
+    .\build.libgit2.ps1 -x86 -x64 -libssh2
+    .\nuget.exe Pack nuget.package/NativeBinaries.nuspec -Version 2.0.320-ssh -NoPackageAnalysis
+    ```
+
+4. Open the LibGit2Sharp solution
+5. Right click the LibGit2Sharp project and click "Manage NuGet packages..."
+6. Make sure "Package source" is set to "libgit2sharp.nativebinaries" which is a local relative path to the package generated in step 3
+7. Check "Include prerelease" as the package version is a prerelease version due to the `-ssh` suffix
+8. Click Install to update to the latest version
+9. Build the `Release` solution configuration.
+
+NOTE: The version of the resulting dll is based on the most recent git tag, which in this case is `0.27.2-ssh.0`.
+For more details, see: https://github.com/adamralph/minver
+
 ## Troubleshooting and support
 
 - Usage or programming related question? Post it on [StackOverflow](http://stackoverflow.com/questions/tagged/libgit2sharp) using the tag *libgit2sharp*
